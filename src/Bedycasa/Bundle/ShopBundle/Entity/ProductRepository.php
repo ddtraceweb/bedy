@@ -12,17 +12,4 @@ use Doctrine\ORM\EntityRepository;
  */
 class ProductRepository extends EntityRepository
 {
-    public function getProducts()
-    {
-        $products = $this->findAll();
-
-        $array = array();
-
-        foreach($products as $key => $product)
-        {
-            $array[$product->getId()] = $product->getName();
-        }
-
-        return $array;
-    }
 }

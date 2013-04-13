@@ -3,12 +3,14 @@
 namespace Bedycasa\Bundle\ShopBundle\Controller;
 
 use Bedycasa\Bundle\ShopBundle\Entity\Basket;
+use Bedycasa\Bundle\ShopBundle\Entity\Product;
 use Bedycasa\Bundle\ShopBundle\Form\BasketType;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
+use Symfony\Component\HttpFoundation\Session\Session;
 
 /**
  * Default controller.
@@ -24,19 +26,16 @@ class DefaultController extends Controller
      */
     public function indexAction()
     {
-        $em = $this->getDoctrine()->getManager();
-
-        $productsArray = $em->getRepository('BedycasaShopBundle:Product')->getProducts();
-
         $basket = new Basket();
 
         $form = $this->createFormBuilder($basket)
           ->add(
-              'productId',
-              'choice',
+              'product',
+              'entity',
               array(
-                  'choices'  => $productsArray,
-                  'required' => false,
+                  'class'  => 'BedycasaShopBundle:Product',
+                  'property' => 'name',
+                  'required' => true,
                   'expanded' => true,
                   'multiple' => false
               )
@@ -55,13 +54,22 @@ class DefaultController extends Controller
      */
     public function basketAddAction(Request $request)
     {
+        $session = new Session();
+        $session->start();
 
         $basketEntity = new Basket();
-        $basketEntity->setSessionId(1234);
+        $basketEntity->setSessionId($session->getId());
 
         $valuesForm = $request->request->get('form');
 
-        $basketEntity->setProductId($valuesForm['productId']);
+        $em = $this->getDoctrine()->getManager();
+        $productEntity = $em->getRepository('BedycasaShopBundle:Product')->find($valuesForm['product']);
+
+        if (!$productEntity) {
+            throw $this->createNotFoundException('Unable to find Product entity.');
+        }
+
+        $basketEntity->setProduct($productEntity);
 
         $em = $this->getDoctrine()->getManager();
         $em->persist($basketEntity);

@@ -3,6 +3,7 @@
 namespace Bedycasa\Bundle\ShopBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
  * Basket
@@ -22,16 +23,19 @@ class Basket
     private $id;
 
     /**
-     * @var integer
+     * @var Product
      *
-     * @ORM\Column(name="product_id", type="integer")
+     * @ORM\ManyToOne(targetEntity="Product", cascade={"persist"})
+     * @ORM\JoinColumn(name="product_id", referencedColumnName="id" )
+     *
+     * @Assert\Type(type="Bedycasa\ShopBundle\Entity\Product")
      */
-    private $productId;
+    private $product;
 
     /**
-     * @var integer
+     * @var string
      *
-     * @ORM\Column(name="session_id", type="integer")
+     * @ORM\Column(name="session_id", type="string")
      */
     private $sessionId;
 
@@ -39,53 +43,41 @@ class Basket
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
         return $this->id;
     }
 
-    /**
-     * Set productId
-     *
-     * @param integer $productId
-     * @return Basket
-     */
-    public function setProductId($productId)
+    public function getProduct()
     {
-        $this->productId = $productId;
-    
-        return $this;
+        return $this->product;
     }
 
-    /**
-     * Get productId
-     *
-     * @return integer 
-     */
-    public function getProductId()
+    public function setProduct(Product $product = null)
     {
-        return $this->productId;
+        $this->product = $product;
     }
 
     /**
      * Set sessionId
      *
      * @param integer $sessionId
+     *
      * @return Basket
      */
     public function setSessionId($sessionId)
     {
         $this->sessionId = $sessionId;
-    
+
         return $this;
     }
 
     /**
      * Get sessionId
      *
-     * @return integer 
+     * @return integer
      */
     public function getSessionId()
     {

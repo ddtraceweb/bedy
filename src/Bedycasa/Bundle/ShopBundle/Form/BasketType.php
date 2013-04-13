@@ -11,15 +11,16 @@ class BasketType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('productId')
             ->add('sessionId')
+            ->add('product')
         ;
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'Bedycasa\Bundle\ShopBundle\Entity\Basket'
+            'data_class' => 'Bedycasa\Bundle\ShopBundle\Entity\Basket',
+            'cascade_validation' => true,
         ));
     }
 
