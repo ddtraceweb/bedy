@@ -1,0 +1,10 @@
+{% extends '::base.html.twig' %}
+
+{% block body -%}
+    <form action="{{ path('basket_add') }}" method="post" {{ form_enctype(form) }}>
+            {{ form_widget(form) }}
+            <p>
+                <button type="submit">Add Basket</button>
+            </p>
+    </form>
+{% endblock %}

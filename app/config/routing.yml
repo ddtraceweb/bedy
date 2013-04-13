@@ -1,0 +1,5 @@
+bedycasa_shop:
+    resource: "@BedycasaShopBundle/Controller/"
+    type:     annotation
+    prefix:   /
+
