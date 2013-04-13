@@ -3,8 +3,7 @@
 namespace Bedycasa\Bundle\ShopBundle\Controller;
 
 use Bedycasa\Bundle\ShopBundle\Entity\Basket;
-use Bedycasa\Bundle\ShopBundle\Entity\Product;
-use Bedycasa\Bundle\ShopBundle\Form\BasketType;
+use Bedycasa\Bundle\ShopBundle\Entity\ProductInBasket;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
@@ -26,14 +25,32 @@ class DefaultController extends Controller
      */
     public function indexAction()
     {
-        $basket = new Basket();
+        $session = new Session();
+        $session->start();
 
-        $form = $this->createFormBuilder($basket)
+        $em     = $this->getDoctrine()->getManager();
+        $basket = $em->getRepository('BedycasaShopBundle:Basket')->findOneBySessionId($session->getId());
+
+        if (!$basket) {
+            $basketEntity = new Basket();
+            $basketEntity->setSessionId($session->getId());
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($basketEntity);
+            $em->flush();
+            $basket = $em->getRepository('BedycasaShopBundle:Basket')->findOneBySessionId($session->getId());
+        }
+
+        $productInBasket = new ProductInBasket();
+
+        $em                       = $this->getDoctrine()->getManager();
+        $productEntitiesInSession = $em->getRepository('BedycasaShopBundle:ProductInBasket')->findByBasket($basket);
+
+        $form = $this->createFormBuilder($productInBasket)
           ->add(
               'product',
               'entity',
               array(
-                  'class'  => 'BedycasaShopBundle:Product',
+                  'class'    => 'BedycasaShopBundle:Product',
                   'property' => 'name',
                   'required' => true,
                   'expanded' => true,
@@ -43,7 +60,8 @@ class DefaultController extends Controller
           ->getForm();
 
         return array(
-            'form' => $form->createView(),
+            'productEntitiesInSession' => $productEntitiesInSession,
+            'form'                     => $form->createView(),
         );
     }
 
@@ -57,23 +75,59 @@ class DefaultController extends Controller
         $session = new Session();
         $session->start();
 
-        $basketEntity = new Basket();
-        $basketEntity->setSessionId($session->getId());
+        $productInBasketEntity = new ProductInBasket();
+
+        $em     = $this->getDoctrine()->getManager();
+        $basket = $em->getRepository('BedycasaShopBundle:Basket')->findOneBySessionId($session->getId());
+
+        if (!$basket) {
+            throw $this->createNotFoundException('Unable to find Basket entity.');
+        }
+
+        $productInBasketEntity->setBasket($basket);
+
+        $productInBasketEntity->setCreatedAt(new \DateTime());
 
         $valuesForm = $request->request->get('form');
 
-        $em = $this->getDoctrine()->getManager();
+        $em            = $this->getDoctrine()->getManager();
         $productEntity = $em->getRepository('BedycasaShopBundle:Product')->find($valuesForm['product']);
 
         if (!$productEntity) {
             throw $this->createNotFoundException('Unable to find Product entity.');
         }
 
-        $basketEntity->setProduct($productEntity);
+        $productInBasketEntity->setProduct($productEntity);
 
         $em = $this->getDoctrine()->getManager();
-        $em->persist($basketEntity);
+        $em->persist($productInBasketEntity);
         $em->flush();
+
+        return $this->redirect($this->generateUrl('index'));
+    }
+
+    /**
+     * @Route("/delete", name="basket_delete")
+     * @Method("GET")
+     * @Template()
+     */
+    public function deleteProductInBasketAction()
+    {
+        $session = new Session();
+        $session->start();
+
+        $em     = $this->getDoctrine()->getManager();
+        $basket = $em->getRepository('BedycasaShopBundle:Basket')->findOneBySessionId($session->getId());
+
+        $em                      = $this->getDoctrine()->getManager();
+        $productInBasketEntities = $em->getRepository('BedycasaShopBundle:ProductInBasket')->findByBasket($basket);
+
+        $em = $this->getDoctrine()->getManager();
+
+        foreach ($productInBasketEntities as $productInBasketEntity) {
+            $em->remove($productInBasketEntity);
+            $em->flush();
+        }
 
         return $this->redirect($this->generateUrl('index'));
     }

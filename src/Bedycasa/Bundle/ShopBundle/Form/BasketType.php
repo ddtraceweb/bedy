@@ -12,15 +12,14 @@ class BasketType extends AbstractType
     {
         $builder
             ->add('sessionId')
-            ->add('product')
+            ->add('createdAt')
         ;
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'Bedycasa\Bundle\ShopBundle\Entity\Basket',
-            'cascade_validation' => true,
+            'data_class' => 'Bedycasa\Bundle\ShopBundle\Entity\Basket'
         ));
     }
 

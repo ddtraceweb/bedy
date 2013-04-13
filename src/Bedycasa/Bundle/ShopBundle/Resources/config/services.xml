@@ -1,20 +1,21 @@
 <?xml version="1.0" ?>
 
 <container xmlns="http://symfony.com/schema/dic/services"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services http://symfony.com/schema/dic/services/services-1.0.xsd">
 
-    <!--
+
     <parameters>
-        <parameter key="bedycasa_shop.example.class">Bedycasa\Bundle\ShopBundle\Example</parameter>
+        <parameter key="gedmo.softdeleteable.listener.class">Gedmo\SoftDeleteable\SoftDeleteableListener</parameter>
     </parameters>
 
     <services>
-        <service id="bedycasa_shop.example" class="%bedycasa_shop.example.class%">
-            <argument type="service" id="service_id" />
-            <argument>plain_value</argument>
-            <argument>%parameter_name%</argument>
+        <service id="gedmo.listener.softdeleteable" class="%gedmo.softdeleteable.listener.class%">
+            <tag name="doctrine.event_subscriber"/>
+            <call method="setAnnotationReader">
+                <argument type="service" id="annotation_reader"/>
+            </call>
         </service>
     </services>
-    -->
+
 </container>

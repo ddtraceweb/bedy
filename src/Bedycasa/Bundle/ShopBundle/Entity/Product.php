@@ -4,12 +4,14 @@ namespace Bedycasa\Bundle\ShopBundle\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
+use Gedmo\Mapping\Annotation as GEDMO;
 
 /**
  * Product
  *
- * @ORM\Table()
+ * @ORM\Table(name="product")
  * @ORM\Entity(repositoryClass="Bedycasa\Bundle\ShopBundle\Entity\ProductRepository")
+ * @GEDMO\SoftDeleteable(fieldName="deletedAt")
  */
 class Product
 {
@@ -30,6 +32,10 @@ class Product
      */
     private $name;
 
+    /**
+     * @ORM\Column(name="deleted_at", type="datetime", nullable=true)
+     */
+    private $deletedAt;
 
     /**
      * Get id
@@ -62,5 +68,15 @@ class Product
     public function getName()
     {
         return $this->name;
+    }
+
+    public function getDeletedAt()
+    {
+        return $this->deletedAt;
+    }
+
+    public function setDeletedAt($deletedAt)
+    {
+        $this->deletedAt = $deletedAt;
     }
 }

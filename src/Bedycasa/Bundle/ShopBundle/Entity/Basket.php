@@ -8,7 +8,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 /**
  * Basket
  *
- * @ORM\Table()
+ * @ORM\Table(name="basket")
  * @ORM\Entity(repositoryClass="Bedycasa\Bundle\ShopBundle\Entity\BasketRepository")
  */
 class Basket
@@ -23,22 +23,11 @@ class Basket
     private $id;
 
     /**
-     * @var Product
-     *
-     * @ORM\ManyToOne(targetEntity="Product", cascade={"persist"})
-     * @ORM\JoinColumn(name="product_id", referencedColumnName="id" )
-     *
-     * @Assert\Type(type="Bedycasa\ShopBundle\Entity\Product")
-     */
-    private $product;
-
-    /**
      * @var string
      *
-     * @ORM\Column(name="session_id", type="string")
+     * @ORM\Column(name="session_id", type="string", unique=true)
      */
     private $sessionId;
-
 
     /**
      * Get id
@@ -48,16 +37,6 @@ class Basket
     public function getId()
     {
         return $this->id;
-    }
-
-    public function getProduct()
-    {
-        return $this->product;
-    }
-
-    public function setProduct(Product $product = null)
-    {
-        $this->product = $product;
     }
 
     /**

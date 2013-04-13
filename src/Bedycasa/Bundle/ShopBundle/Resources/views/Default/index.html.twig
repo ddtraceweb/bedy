@@ -1,6 +1,18 @@
 {% extends '::base.html.twig' %}
 
 {% block body -%}
+    Dans le panier<br>
+    <ul>
+    {% for product in productEntitiesInSession %}
+        <li>{{ product.product.name }}</li>
+    {% endfor %}
+    </ul>
+
+    <a href="{{ path('basket_delete') }}" >Vider le Panier</a>
+
+    <br>
+    Ajouter des produits :<br>
+
     <form action="{{ path('basket_add') }}" method="post" {{ form_enctype(form) }}>
             {{ form_widget(form) }}
             <p>
