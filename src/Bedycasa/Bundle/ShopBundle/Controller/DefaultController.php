@@ -27,7 +27,7 @@ class DefaultController extends Controller
     {
         $session = new Session();
         $session->start();
-        $em     = $this->getDoctrine()->getManager();
+        $em = $this->getDoctrine()->getManager();
 
         $basket = $em->getRepository('BedycasaShopBundle:Basket')->findOneBySessionId($session->getId());
 
@@ -42,7 +42,7 @@ class DefaultController extends Controller
         $productEntitiesInSession = $em->getRepository('BedycasaShopBundle:ProductInBasket')->findByBasket($basket);
 
         $productInBasket = new ProductInBasket();
-        $form = $this->createFormBuilder($productInBasket)
+        $form            = $this->createFormBuilder($productInBasket)
           ->add(
               'product',
               'entity',
@@ -72,7 +72,7 @@ class DefaultController extends Controller
         $session = new Session();
         $session->start();
 
-        $em     = $this->getDoctrine()->getManager();
+        $em = $this->getDoctrine()->getManager();
 
         $productInBasketEntity = new ProductInBasket();
 
@@ -112,8 +112,10 @@ class DefaultController extends Controller
         $session = new Session();
         $session->start();
 
-        $em     = $this->getDoctrine()->getManager();
-        $basket = $em->getRepository('BedycasaShopBundle:Basket')->findOneBySessionId($session->getId());
+        $em                      = $this->getDoctrine()->getManager();
+        $basket                  = $em->getRepository('BedycasaShopBundle:Basket')->findOneBySessionId(
+            $session->getId()
+        );
         $productInBasketEntities = $em->getRepository('BedycasaShopBundle:ProductInBasket')->findByBasket($basket);
 
         foreach ($productInBasketEntities as $productInBasketEntity) {
