@@ -9,7 +9,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
-use Symfony\Component\HttpFoundation\Session\Session;
 
 /**
  * Default controller.
@@ -25,7 +24,7 @@ class DefaultController extends Controller
      */
     public function indexAction()
     {
-        $session = new Session();
+        $session = $this->get('session');
         $session->start();
         $em = $this->getDoctrine()->getManager();
 
@@ -69,7 +68,7 @@ class DefaultController extends Controller
      */
     public function basketAddAction(Request $request)
     {
-        $session = new Session();
+        $session = $this->get('session');
         $session->start();
 
         $em = $this->getDoctrine()->getManager();
@@ -109,7 +108,7 @@ class DefaultController extends Controller
      */
     public function deleteProductInBasketAction()
     {
-        $session = new Session();
+        $session = $this->get('session');
         $session->start();
 
         $em                      = $this->getDoctrine()->getManager();
